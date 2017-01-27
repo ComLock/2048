@@ -2,19 +2,14 @@
 
 var board = [
   [ 2, 2, 2, 2 ],
-  [ 2, 0, 0, 0 ],
-  [ 0, 0, 0, 0 ],
-  [ 0, 0, 0, 0 ],
+  [ 2, 2, 2, 2 ],
+  [ 2, 2, 2, 2 ],
+  [ 2, 2, 2, 2 ],
 ];
 
 /* TODO:
-
   * Find a random free cell and place a number 2 into it
   * Place two number 2 at random cells
-  * Tilt the board
-  * Move and merge brick
-  * Flytte, merge, stå stille
-
 */
 
 function moveUp(x,y) {
@@ -75,11 +70,10 @@ function moveLeft(x,y) {
   // else Can't move
 }
 
-function processRow(row, y, direction) {
-  row.forEach((value, x) => {
+function processRow(y, direction) {
+  [0,1,2,3].forEach(x => {
     direction === 'right' && moveRight(x,y) || moveLeft(x,y);
   });
-  return row;
 }
 
 function processColumn(x, direction) {
@@ -90,10 +84,10 @@ function processColumn(x, direction) {
 
 function tilt(direction) {
   if(direction === 'left' || direction == 'right') {
-    board.forEach((row, y) => {
-      row = processRow(row, y, direction);
-      row = processRow(row, y, direction);
-      row = processRow(row, y, direction);
+    [0,1,2,3].forEach(y => {
+      processRow(y, direction);
+      processRow(y, direction);
+      processRow(y, direction);
     });
   } else {
     [0,1,2,3].forEach(x => {
@@ -105,5 +99,8 @@ function tilt(direction) {
 }
 
 console.log(JSON.stringify(board, null, 4));
+tilt('up');
+tilt('right');
 tilt('down');
+tilt('left');
 console.log(JSON.stringify(board, null, 4));
