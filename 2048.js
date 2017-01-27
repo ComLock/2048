@@ -2,29 +2,37 @@ var game = new Phaser.Game(590, 590, Phaser.AUTO, '', { preload: preload, create
 
 var board;
 var tiles;
+var oooo;
 
 function preload() {
+  game.load.audio('oooo', 'oooo.wav');
 }
+
 
 function create() {
   board = new Phaser.Rectangle(0, 0, 590, 590);
   tiles = randomizeTiles(4);
   renderTiles(tiles);
+  oooo = game.add.audio('oooo');
 }
 
 function update() {
   if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT)){
     console.log('left');
     //tilt('left');
+    oooo.play();
   } else if (game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
     console.log('right');
     //tilt('right');
+    oooo.play();
   } else if (game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
     console.log('up');
     //tilt('up');
+    oooo.play();
   } else if (game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
     console.log('down');
     //tilt('down');
+    oooo.play();
   }
 }
 
