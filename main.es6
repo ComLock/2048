@@ -1,86 +1,109 @@
 #!/usr/bin/env node
 
 var board = [
-  [ 2, 2, 2, 2 ],
-  [ 2, 2, 2, 2 ],
-  [ 2, 2, 2, 2 ],
-  [ 2, 2, 2, 2 ],
+  [ 0, 0, 0, 0 ],
+  [ 0, 0, 0, 0 ],
+  [ 0, 0, 0, 0 ],
+  [ 0, 0, 0, 0 ],
 ];
 
-/* TODO:
-  * Find a random free cell and place a number 2 into it
-  * Place two number 2 at random cells
-*/
 
-function moveUp(x,y) {
+
+function randomizeIndex(max) {
+  return Math.round(Math.random() * max);
+}
+
+
+
+function randomizeTile(size, tiles) {
+  var tile;
+  do {
+    tile = {
+      x: randomizeIndex(size),
+      y: randomizeIndex(size)
+    };
+  } while (tiles[tile.x][tile.y] != 0)
+  return tile;
+}
+
+
+
+function isHorizontal(direction) {
+  return (direction === 'left' || direction === 'right') ? true : false;
+}
+
+
+
+function isVertical(direction) {
+  return (direction === 'up' || direction === 'down') ? true : false;
+}
+
+
+
+function move(direction, x, y) {
   var value = board[y][x];
   if(value === 0) { return; } // Is zero do nothing
-  if(y===0) { return; } // Already in upmost position, do nothing
-  if(board[y-1][x] === value) { // Merge
+  var bounds = (direction === 'left' || direction === 'up' ) ? 0 : 3;
+  if((isHorizontal(direction) && x===bounds) || (isVertical(direction) && y===bounds)) { return; } // Already on edge, do nothing
+  var nextX = isHorizontal(direction) ? (direction === 'left' ? x-1 : x+1): x;
+  var nextY = isVertical(direction) ? (direction === 'up' ? y-1 : y+1): y;
+  console.log(`direction:${direction} bounds:${bounds} x:${x} y:${y} nextX:${nextX} nextY:${nextY}`);
+  if(board[nextY][nextX] === value) { // Merge
     board[y][x] = 0;
-    board[y-1][x] = 2*value;
-  } else if (board[y-1][x] === 0) { // Next is zero so move
+    board[nextY][nextX] = 2*value;
+  } else if (board[nextY][nextX] === 0) { // Next is zero so move
     board[y][x] = 0;
-    board[y-1][x] = value;
+    board[nextY][nextX] = value;
   }
   // else Can't move
 }
 
 
-function moveDown(x,y) {
-  var value = board[y][x];
-  if(value === 0) { return; } // Is zero do nothing
-  if(y===3) { return; } // Already in downmost position, do nothing
-  if(board[y+1][x] === value) { // Merge
-    board[y][x] = 0;
-    board[y+1][x] = 2*value;
-  } else if (board[y+1][x] === 0) { // Next is zero so move
-    board[y][x] = 0;
-    board[y+1][x] = value;
-  }
-  // else Can't move
-}
-
-
-function moveRight(x,y) {
-  var value = board[y][x];
-  if(value === 0) { return; } // Is zero do nothing
-  if(x===3) { return; } // Already in rightmost position, do nothing
-  if(board[y][x+1] === value) { // Merge
-    board[y][x] = 0;
-    board[y][x+1] = 2*value;
-  } else if (board[y][x+1] === 0) { // Next is zero so move
-    board[y][x] = 0;
-    board[y][x+1] = value;
-  }
-  // else Can't move
-}
-
-function moveLeft(x,y) {
-  var value = board[y][x];
-  if(value === 0) { return; } // Is zero do nothing
-  if(x===0) { return; } // Already in leftmost position, do nothing
-  if(board[y][x-1] === value) { // Merge
-    board[y][x] = 0;
-    board[y][x-1] = 2*value;
-  } else if (board[y][x-1] === 0) { // Next is zero so move
-    board[y][x] = 0;
-    board[y][x-1] = value;
-  }
-  // else Can't move
-}
 
 function processRow(y, direction) {
   [0,1,2,3].forEach(x => {
-    direction === 'right' && moveRight(x,y) || moveLeft(x,y);
+    move(direction, x, y);
+    //direction === 'right' && moveRight(x,y) || moveLeft(x,y);
   });
 }
 
+
+
 function processColumn(x, direction) {
   [0,1,2,3].forEach(y => {
-    direction === 'up' && moveUp(x,y) || moveDown(x,y);
+    move(direction, x, y);
+    //direction === 'up' && moveUp(x,y) || moveDown(x,y);
   });
 }
+
+
+
+function printBoard() {
+  board.forEach((row, y) => {
+    console.log(board[y].join(', '));
+  })
+}
+
+
+
+function sumBoard(){
+  return [].concat.apply([], board).reduce((a,b) => a+b);
+}
+
+
+
+function printSum() {
+  console.log(`Sum: ${sumBoard()}`);
+}
+
+
+
+function placeNumber() {
+  const coord = randomizeTile(4, board);
+  board[coord.x][coord.y] = 2;
+}
+
+
 
 function tilt(direction) {
   if(direction === 'left' || direction == 'right') {
@@ -96,11 +119,20 @@ function tilt(direction) {
       processColumn(x, direction);
     });
   }
+  placeNumber();
+  printBoard()
+  printSum();
 }
 
-console.log(JSON.stringify(board, null, 4));
+
+
+printBoard()
+printSum();
+placeNumber();
+placeNumber();
+printBoard()
+printSum();
 tilt('up');
 tilt('right');
 tilt('down');
 tilt('left');
-console.log(JSON.stringify(board, null, 4));
