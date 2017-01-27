@@ -66,6 +66,7 @@ function printSum() {
 function placeNumber() {
   const coord = randomizeTile(4, board);
   board[coord.x][coord.y] = 2;
+  render();
 }
 
 function processA(direction, a) {
@@ -133,24 +134,49 @@ function playRandomSound() {
   gamesounds[Math.round(Math.random() * gamesounds.length) - 1].play();
 }
 
-function update() {
-  if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
-    console.log('left');
-    tilt('left');
-    gamesounds[0].play();
-  } else if (game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
-    console.log('right');
-    tilt('right');
-    gamesounds[1].play();
-  } else if (game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
-    console.log('up');
-    tilt('up');
-    gamesounds[2].play();
-  } else if (game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
-    console.log('down');
-    tilt('down');
-    gamesounds[3].play();
+document.addEventListener("keyup", function (event) {
+  switch (event.keyCode) {
+    case 38: // up
+      console.log('up');
+      tilt('up');
+      gamesounds[2].play();
+      break;
+    case 40: // down
+      console.log('down');
+      tilt('down');
+      gamesounds[3].play();
+      break;
+    case 39: // right
+      console.log('right');
+      tilt('right');
+      gamesounds[1].play();
+      break;
+    case 37: // left
+      console.log('left');
+      tilt('left');
+      gamesounds[0].play();
+      break;
   }
+})
+
+function update() {
+  /*  if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
+      console.log('left');
+      tilt('left');
+      gamesounds[0].play();
+    } else if (game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
+      console.log('right');
+      tilt('right');
+      gamesounds[1].play();
+    } else if (game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
+      console.log('up');
+      tilt('up');
+      gamesounds[2].play();
+    } else if (game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
+      console.log('down');
+      tilt('down');
+      gamesounds[3].play();
+    }*/
 }
 
 function render() {
