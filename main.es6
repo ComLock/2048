@@ -47,33 +47,18 @@ function move(direction, x, y) {
   if((isHorizontal(direction) && x===bounds) || (isVertical(direction) && y===bounds)) { return; } // Already on edge, do nothing
   var nextX = isHorizontal(direction) ? (direction === 'left' ? x-1 : x+1): x;
   var nextY = isVertical(direction) ? (direction === 'up' ? y-1 : y+1): y;
-  console.log(`direction:${direction} bounds:${bounds} x:${x} y:${y} nextX:${nextX} nextY:${nextY}`);
   if(board[nextY][nextX] === value) { // Merge
     board[y][x] = 0;
     board[nextY][nextX] = 2*value;
+    //console.log(`MERGE: direction:${direction} bounds:${bounds} x:${x} y:${y} nextX:${nextX} nextY:${nextY}`);
+    //printBoard();
   } else if (board[nextY][nextX] === 0) { // Next is zero so move
     board[y][x] = 0;
     board[nextY][nextX] = value;
+    //console.log(`MOVE: direction:${direction} bounds:${bounds} x:${x} y:${y} nextX:${nextX} nextY:${nextY}`);
+    //printBoard();
   }
   // else Can't move
-}
-
-
-
-function processRow(y, direction) {
-  [0,1,2,3].forEach(x => {
-    move(direction, x, y);
-    //direction === 'right' && moveRight(x,y) || moveLeft(x,y);
-  });
-}
-
-
-
-function processColumn(x, direction) {
-  [0,1,2,3].forEach(y => {
-    move(direction, x, y);
-    //direction === 'up' && moveUp(x,y) || moveDown(x,y);
-  });
 }
 
 
@@ -105,20 +90,25 @@ function placeNumber() {
 
 
 
+function processA(direction, a) {
+  [0,1,2,3].forEach(b => {
+    if(isHorizontal(direction)) {
+      move(direction, b, a);
+    } else {
+      move(direction, a, b);
+    }
+  });
+}
+
+
+
 function tilt(direction) {
-  if(direction === 'left' || direction == 'right') {
-    [0,1,2,3].forEach(y => {
-      processRow(y, direction);
-      processRow(y, direction);
-      processRow(y, direction);
-    });
-  } else {
-    [0,1,2,3].forEach(x => {
-      processColumn(x, direction);
-      processColumn(x, direction);
-      processColumn(x, direction);
-    });
-  }
+  console.log(`Tilting ${direction}`);
+  [0,1,2,3].forEach(a => {
+    processA(direction, a);
+    processA(direction, a);
+    processA(direction, a);
+  });
   placeNumber();
   printBoard()
   printSum();
