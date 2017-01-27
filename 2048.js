@@ -13,6 +13,19 @@ function create() {
 }
 
 function update() {
+  if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT)){
+    console.log('left');
+    //tilt('left');
+  } else if (game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
+    console.log('right');
+    //tilt('right');
+  } else if (game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
+    console.log('up');
+    //tilt('up');
+  } else if (game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
+    console.log('down');
+    //tilt('down');
+  }
 }
 
 function render() {
