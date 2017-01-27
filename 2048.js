@@ -1,4 +1,4 @@
-var game = new Phaser.Game(600, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update, render: render });
+var game = new Phaser.Game(590, 590, Phaser.AUTO, '', { preload: preload, create: create, update: update, render: render });
 
 var board;
 var tiles;
@@ -7,15 +7,16 @@ function preload() {
 }
 
 function create() {
-  board = new Phaser.Rectangle(50, 50, 500, 500);
+  board = new Phaser.Rectangle(0, 0, 590, 590);
   tiles = randomizeTiles(4);
+  renderTiles(tiles);
 }
 
 function update() {
 }
 
 function render() {
-  game.debug.geom(board, '#0fffff');
+  game.debug.geom(board, '#9F6164');
   renderTiles(tiles);
 }
 
@@ -34,9 +35,9 @@ function randomizeTiles(size) {
     };
   } while (tile1.x == tile2.x && tile1.y == tile2.y)
 
-  for (var i = 0; i++; i < size) {
+  for (var i = 0; i < size; i++) {
     var row = [];
-    for (var j = 0; j++; j < size) {
+    for (var j = 0; j < size; j++) {
       row[j] = tile1.x == i && tile1.y == j || tile2.x == i && tile2.y == j ? defaultVal : 0
     }
     tiles[i] = row;
@@ -51,12 +52,12 @@ function randomizeTile(size, tiles) {
       x: randomizeIndex(size),
       y: randomizeIndex(size)
     };
-  } while (tiles[tile.x][tile.y] == 0)
+  } while (tiles[tile.x][tile.y] != 0)
   return tile;
 }
 
 function randomizeIndex(max) {
-  return Math.round(Math.random() * max);
+  return Math.floor(Math.random() * max);
 }
 
 var views = [];
@@ -64,19 +65,30 @@ var views = [];
 function renderTiles(tiles) {
   var size = tiles.length;
   var tileSize = 500 / size;
-  for (var i = 0; i++; i < tiles.length) {
-    for (var j = 0; j++; j < row.length) {
-      var tile = tiles[i][j];
-      var view = views[i][j];
+  for (var i = 0; i < tiles.length; i++) {
+    var row = tiles[i];
+    for (var j = 0; j < row.length; j++) {
+      var tile = row[j];
+      var viewRow = views[i];
+      if (!viewRow) {
+        viewRow = [];
+        views[i] = viewRow;
+      }
+      var view = viewRow[j];
       if (!view) {
-        var text = new Phaser.Text(tile);
-        var bg = new Phaser.Rectangle(50 + i * tileSize, 50 + j * tileSize, tileSize, tileSize);
-        view = game.add.group();
-        view.add(bg);
-        view.add(text);
+        var x = 30 + i * (tileSize + 10),
+          y = 30 + j * (tileSize + 10);
+        view = new Phaser.Rectangle(x, y, tileSize, tileSize);
+        if (tile > 0) {
+          var style = { font: "bold 32px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle" };
+          var text = game.add.text(x, y, "" + tile, style);
+          text.setTextBounds(x, y, tileSize, tileSize);
+        }
+        viewRow[j] = view;
       } else {
 
       }
+      game.debug.geom(view, '#F8DEBD');
     }
   }
 }
