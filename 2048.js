@@ -2,10 +2,26 @@ var game = new Phaser.Game(590, 590, Phaser.AUTO, '', { preload: preload, create
 
 var board;
 var tiles;
-var oooo;
+var gamesounds;
+var isPlaying = 0;
+var sounds = [
+  'oooo',
+  'bad_boy2',
+  'jackass',
+  'ohh',
+  'uh_oh',
+  'clueless_whatever',
+  'no',
+  'oooo',
+  'whoops',
+  'go_ahead1',
+  'oh_my1',
+  'ooooh',
+  'yaahaha'
+];
 
 function preload() {
-  game.load.audio('oooo', 'oooo.wav');
+  sounds.forEach(a => game.load.audio(a, `audio/${a}.wav`));
 }
 
 
@@ -13,26 +29,30 @@ function create() {
   board = new Phaser.Rectangle(0, 0, 590, 590);
   tiles = randomizeTiles(4);
   renderTiles(tiles);
-  oooo = game.add.audio('oooo');
+  gamesounds = sounds.map(a => game.add.audio(a));
+}
+
+function playRandomSound() {
+    gamesounds[Math.round(Math.random() * gamesounds.length)-1].play();
 }
 
 function update() {
   if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT)){
     console.log('left');
     //tilt('left');
-    oooo.play();
+    gamesounds[0].play();
   } else if (game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
     console.log('right');
     //tilt('right');
-    oooo.play();
+    gamesounds[1].play();
   } else if (game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
     console.log('up');
     //tilt('up');
-    oooo.play();
+    gamesounds[2].play();
   } else if (game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
     console.log('down');
     //tilt('down');
-    oooo.play();
+    gamesounds[3].play();
   }
 }
 
