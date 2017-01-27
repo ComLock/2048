@@ -26,7 +26,10 @@ function preload() {
 
 
 function create() {
-  board = new Phaser.Rectangle(0, 0, 590, 590);
+  board = game.add.graphics();
+  board.beginFill(0x9F6164, 1);
+  board.drawRect(0, 0, 590, 590);
+
   tiles = randomizeTiles(4);
   renderTiles(tiles);
   gamesounds = sounds.map(a => game.add.audio(a));
@@ -37,7 +40,7 @@ function playRandomSound() {
 }
 
 function update() {
-  if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT)){
+  if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
     console.log('left');
     //tilt('left');
     gamesounds[0].play();
@@ -57,32 +60,27 @@ function update() {
 }
 
 function render() {
-  game.debug.geom(board, '#9F6164');
   renderTiles(tiles);
 }
 
 function randomizeTiles(size) {
   var defaultVal = 2;
   var tiles = [];
-  var tile1 = {
-    x: randomizeIndex(size),
-    y: randomizeIndex(size)
-  };
-  var tile2;
-  do {
-    tile2 = {
-      x: randomizeIndex(size),
-      y: randomizeIndex(size)
-    };
-  } while (tile1.x == tile2.x && tile1.y == tile2.y)
 
   for (var i = 0; i < size; i++) {
     var row = [];
     for (var j = 0; j < size; j++) {
-      row[j] = tile1.x == i && tile1.y == j || tile2.x == i && tile2.y == j ? defaultVal : 0
+      row[j] = 0;
     }
     tiles[i] = row;
   }
+
+  var tile1 = randomizeTile(4, tiles);
+  tiles[tile1.x][tile1.y] = defaultVal;
+
+  var tile2 = randomizeTile(4, tiles);
+  tiles[tile2.x][tile2.y] = defaultVal;
+
   return tiles;
 }
 
@@ -102,34 +100,50 @@ function randomizeIndex(max) {
 }
 
 var views = [];
+var texts = [];
 
 function renderTiles(tiles) {
   var size = tiles.length;
   var tileSize = 500 / size;
+
   for (var i = 0; i < tiles.length; i++) {
     var row = tiles[i];
     for (var j = 0; j < row.length; j++) {
       var tile = row[j];
+
       var viewRow = views[i];
       if (!viewRow) {
         viewRow = [];
         views[i] = viewRow;
       }
-      var view = viewRow[j];
-      if (!view) {
-        var x = 30 + i * (tileSize + 10),
-          y = 30 + j * (tileSize + 10);
-        view = new Phaser.Rectangle(x, y, tileSize, tileSize);
-        if (tile > 0) {
-          var style = { font: "bold 32px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle" };
-          var text = game.add.text(x, y, "" + tile, style);
-          text.setTextBounds(x, y, tileSize, tileSize);
-        }
-        viewRow[j] = view;
-      } else {
+      var view = viewRow[j],
+        x = 30 + i * (tileSize + 10),
+        y = 30 + j * (tileSize + 10);
 
+      if (!view) {
+        view = game.add.graphics();
+        view.beginFill(0xF8DEBD, 1);
+        view.drawRect(x, y, tileSize, tileSize);
+        viewRow[j] = view;
       }
-      game.debug.geom(view, '#F8DEBD');
+
+      if (tile > 0) {
+        var textRow = texts[i];
+        if (!textRow) {
+          var textRow = [];
+          texts[i] = textRow;
+        }
+
+        var text = textRow[j];
+        if (!text) {
+          var style = { font: "bold 32px Arial", fill: "#9F6164", boundsAlignH: "center", boundsAlignV: "middle" };
+          var text = game.add.text(x, y, "" + tile, style);
+          text.setTextBounds(0, 0, tileSize, tileSize);
+          textRow[j] = text;
+        } else {
+          text.setText("" + tile);
+        }
+      }
     }
   }
 }
